@@ -1,0 +1,11 @@
+---
+
+- name: add ipsec config file
+  template:
+    src: etc/ipsec.conf.j2
+    dest: "{{install_dir}}/strongswan-{{strongswan_version}}/etc/ipsec.conf"
+
+- name: add new user
+  template:
+    src: etc/ipsec.secrets.j2
+    dest: "{{install_dir}}/strongswan-{{strongswan_version}}/etc/ipsec.secrets"

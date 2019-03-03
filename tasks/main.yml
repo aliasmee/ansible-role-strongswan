@@ -1,0 +1,43 @@
+---
+
+- name: Get Your Pub IP
+  ipify_facts:
+  register: public_ip
+
+- name: Install strongswan
+  include: install_strongswan.yml
+
+- name: Check cert exists
+  stat:
+    path: "{{ install_dir }}/etc/ipsec.d/cacerts/ca.cert.pem"
+  register: cacertfile
+
+- name: Generate cert
+  include: make_cert.yml
+  when: cacertfile.stat.exists == False
+
+- name: Configure strongswan
+  include: config_strongswan.yml
+
+- name: Configure system kernel sysctl
+  include: config_system.yml
+
+- name: Configure iptables rules
+  include: config_iptables.yml
+
+- name: Get CA cert contents
+  slurp:
+    src: "{{install_dir}}/strongswan-{{strongswan_version}}/etc/ipsec.d/certs/server.cert.pem"
+  register: ca_cert_content
+
+# Output with line feed symbol("\n"),Recommend write some file use echo command.
+- name: Read CA cert contents output current terminal
+  debug:
+    msg: "{{ ca_cert_content['content'] | b64decode }}"
+  when: view_certificate == True
+
+# combine radius
+- name: Configure eap-radius plugin
+  include: config_eapradius.yml
+  notify: "Restart ipsec service"
+  when: enabled_radius == 'yes'

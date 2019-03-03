@@ -1,0 +1,8 @@
+---
+# 本剧本用于安装strongswan
+
+- hosts: my-vpn
+  vars_files:
+    - vars/main.yml
+  roles:
+    - role: aliasmee.strongswan-20190302

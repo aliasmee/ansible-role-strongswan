@@ -1,0 +1,16 @@
+---
+
+- name: Copy cert generate script
+  template:
+    src: ipsec_pki.sh
+    dest: "{{ cert_path }}"
+    mode: "u=rwx,g=rw,o=r"
+
+- name: Check certificate is available
+  shell: ipsec pki --print --in {{install_dir}}/strongswan-{{strongswan_version}}/etc/ipsec.d/certs/server.cert.pem 2>&1 | grep altNames | egrep -o '{{ vpn_liftid }}'
+  ignore_errors: yes
+  register: cert_altname
+
+- name: make private cert
+  command: /bin/bash /{{cert_path}}/ipsec_pki.sh
+  when: cert_altname.stdout != vpn_liftid or cert_altname.rc != 0

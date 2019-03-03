@@ -1,0 +1,32 @@
+---
+
+- name: add iptables rules
+  command: "{{ item }}"
+  with_items:
+    # - iptables -P INPUT ACCEPT
+    # - iptables -P FORWARD ACCEPT
+    - iptables -F
+    - iptables -Z
+    - iptables -P INPUT ACCEPT
+    - iptables -P FORWARD ACCEPT
+    - iptables -P OUTPUT ACCEPT
+    - iptables -t nat -F
+    - iptables -t mangle -F
+    - iptables -F
+    - iptables -X
+    # - iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    # - iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+    # - iptables -A INPUT -i lo -j ACCEPT
+    - iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    - iptables -A INPUT -i lo -j ACCEPT
+    - iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+    - iptables -A INPUT -i {{ ansible_default_ipv4.interface }} -p esp -j ACCEPT
+    - iptables -A INPUT -i {{ ansible_default_ipv4.interface }} -p udp -m udp --dport 500 -j ACCEPT
+    - iptables -A INPUT -i {{ ansible_default_ipv4.interface }} -p udp -m udp --dport 4500 -j ACCEPT
+    - iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
+    - iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+    - iptables -A FORWARD -s {{ client_dhcp_ip }} -j ACCEPT
+    - iptables -A FORWARD -j REJECT --reject-with icmp-host-prohibited
+    - iptables -A FORWARD -t mangle -s {{ client_dhcp_ip }} -o {{ ansible_default_ipv4.interface }} -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1361:1536 -j TCPMSS --set-mss 1360
+    - iptables -A POSTROUTING -t nat -s {{ client_dhcp_ip }} -o eth0 -j MASQUERADE
+  notify: "Restart ipsec service"

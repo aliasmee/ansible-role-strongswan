@@ -1,0 +1,76 @@
+---
+
+- name: Disable selinux
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: 'SELINUX=disabled'
+
+- name: Update System
+  yum:
+    name: '*'
+    state: latest
+    exclude: kernel*
+
+
+- name: Install dependencies software
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - pam-devel
+    - openssl-devel
+    - make
+    - gcc
+    - wget
+    - unzip
+
+- name: Create dep directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ create_path }}"
+
+- name: Download Strongswan package
+  get_url:
+    url: "https://download.strongswan.org/strongswan-{{ strongswan_version }}.tar.gz"
+    dest: "{{ download_dir }}/strongswan-5.7.2.tar.gz"
+    checksum: md5:d449aa1936218a42e34c32494947308b
+
+# Make sure the required command to extract the file is installed
+- name: Unarchive file
+  unarchive:
+    src: "{{download_dir}}/strongswan-{{strongswan_version}}.tar.gz"
+    dest: "{{download_dir}}/temp/"
+    remote_src: yes
+
+- name: Copy strongswan install configure script
+  template:
+    src: configure.sh
+    dest: "{{download_dir}}/temp/strongswan-{{strongswan_version}}"
+    mode: "u=rwx,g=rw,o=r"
+
+- name: Check that ipsec has been installed
+  shell: "ipsec version 2>&1 | grep -o {{strongswan_version}}"
+  register: ipsec_version
+  ignore_errors: yes
+
+- name: Configure strongswan before make
+  command: "/bin/bash /{{download_dir}}/temp/strongswan-{{strongswan_version}}/configure.sh"
+  register: compile_info
+
+- name: Install strongswan
+  shell: cd "{{download_dir}}/temp/strongswan-{{strongswan_version}}/" && make && make install
+  when:
+    - compile_info.rc == 0
+    - ipsec_version.stdout != strongswan_version
+
+- name: Add a PATH entry with {{extrapath}}
+  template:
+    src: strongswan-project.sh.j2
+    dest: /etc/profile.d/strongswan-project.sh
+    mode: 0644
+
+- name: Update system path for ipsec
+  shell: source /etc/profile

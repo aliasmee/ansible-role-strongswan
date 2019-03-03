@@ -1,0 +1,14 @@
+---
+
+- name: Start ipsec service
+  command: ipsec start
+  register: ipsec_start
+
+- name: Reload ipsec service
+  command: ipsec reload
+
+- name: Rereadall ipsec config
+  command: ipsec rereadall
+
+- name: Restart ipsec service
+  command: ipsec restart

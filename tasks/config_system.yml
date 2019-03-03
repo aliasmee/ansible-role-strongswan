@@ -1,0 +1,17 @@
+---
+
+- name: enable system ip forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: enable ip no_pmtu_disc
+  sysctl:
+    name: net.ipv4.ip_no_pmtu_disc
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes

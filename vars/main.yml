@@ -1,0 +1,69 @@
+---
+# StrongsWan Version
+strongswan_version: 5.7.2
+
+# CA Cert info
+vpn_liftid: "{{ ipify_public_ip }}"
+dn_prefix: "C=cn, O=Ops"
+ca_dn_info: "{{dn_prefix}}, CN=Own VPN CA"
+server_dn_info: "{{dn_prefix}}"
+client_dn_info: "{{dn_prefix}}, CN=VPN Client"
+ca_lifetime: 365
+server_lifetime: 120
+
+# Strongswan settings
+client_dhcp_ip: 10.28.0.0/24
+client_dhcp_dns: 8.8.8.8
+client_auth: eap-mschapv2  # choice: [eap-mschapv2, eap-radius], Default eap-mschapv2;
+client_tunnel_range: 172.16.0.0/16  # only accors this tunnel
+
+# Strongswan combine freeradius configure
+enabled_radius: no
+radius_port: 1812
+radius_secret: testing123
+radius_ip: 127.0.0.1
+
+# temp test user
+username: testUserOnePla4
+password: testOnePassPla4
+
+
+
+# Other info
+download_path: '/tmp'
+download_dir: /tmp
+install_dir: /opt
+cert_path: "{{download_dir}}/certs"
+extra_path: "{{install_dir}}/strongswan-{{strongswan_version}}/sbin"
+
+# Strongswan config compile config list
+config_list:
+  - "--prefix={{install_dir}}/strongswan-{{strongswan_version}}"
+  - "--enable-eap-identity"
+  - "--enable-eap-md5"
+  - "--enable-eap-mschapv2"
+  - "--enable-eap-tls"
+  - "--enable-eap-ttls"
+  - "--enable-eap-peap"
+  - "--enable-eap-tnc"
+  - "--enable-eap-dynamic"
+  - "--enable-eap-radius"
+  - "--enable-xauth-eap"
+  - "--enable-xauth-pam"
+  - "--enable-dhcp"
+  - "--enable-openssl"
+  - "--enable-addrblock"
+  - "--enable-unity"
+  - "--enable-certexpire"
+  - "--enable-radattr"
+  - "--enable-swanctl"
+  - "--enable-openssl"
+  - "--disable-gmp"
+
+create_path:
+  - "{{install_dir}}"
+  - "{{download_dir}}/temp"
+  - "{{cert_path}}"
+
+# Read ca cert content
+view_certificate: True
