@@ -1,10 +1,10 @@
 eap-radius {
 
     # Send RADIUS accounting information to RADIUS servers.
-{% if client_auth == 'eap-mschapv2' %}
-    accounting = no
-{% elif client_auth == 'eap-radius' %}
+{% if enabled_radius %}
     accounting = yes
+{% else %}
+    accounting = no
 {% endif %}
 
     # Close the IKE_SA if there is a timeout during interim RADIUS accounting

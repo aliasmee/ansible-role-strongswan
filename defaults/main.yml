@@ -14,7 +14,6 @@ server_lifetime: 1200   # server cert validity period (Unit: Day)
 # Strongswan settings
 client_dhcp_ip: 10.28.0.0/24  # Vip allocated after the client dials
 client_dhcp_dns: 8.8.8.8      # Assigned to the client
-client_auth: eap-mschapv2  # Support method: [eap-mschapv2, eap-radius], Default eap-mschapv2;
 client_tunnel_range: 0.0.0.0/0  # Only these flows accors this tunnel-> tunnel-slpit
 
 # Temp vpn test user (/etc/ipsec.secrets)
@@ -23,7 +22,9 @@ password: testOnePassPla4
 
 
 # Strongswan combine freeradius configure
-enabled_radius: no # If you want to use ldap authentication, please set to yes.
+# If you want to use ldap authentication, please set enabled_radius to True!!!
+# Default client auth method eap-mschapv2
+enabled_radius: False
 radius_port: 1812
 radius_secret: testing123
 radius_ip: 127.0.0.1

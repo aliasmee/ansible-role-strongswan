@@ -1,6 +1,8 @@
 ---
 
-- name: config strongswan combine freeradius
+- name: Config strongswan combine freeradius
   template:
     src: eap-radius.conf.j2
     dest: "{{install_dir}}/strongswan-{{strongswan_version}}/etc/strongswan.d/charon/eap-radius.conf"
+  when: enabled_radius
+  notify: "Restart ipsec service"

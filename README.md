@@ -26,7 +26,7 @@ variables_name | Description | Default
 `client_dhcp_dns` | client connect vpn agter allocated dns server | `8.8.8.8`
 `client_auth` | client auth method, [eap-mschapv2, eap-radius] | `eap-mschapv2`
 `client_tunnel_range` | Only these flows accors this tunnel-> tunnel-slpit | `0.0.0.0/0`
-`enabled_radius` | If you want to use ldap authentication, please set to yes. | `no`
+~~`enabled_radius` | If you want to use ldap authentication, please set to True!!! | `no`~~
 `radius_port` | radius server port | `1812`
 `radius_secret` | radius server connect secret | `testing123`
 `radius_ip` | radius server address | `127.0.0.1`

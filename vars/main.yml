@@ -3,7 +3,7 @@
 strongswan_version: 5.7.2
 
 # CA Cert info
-vpn_liftid: "{{ ipify_public_ip }}"
+vpn_liftid: "wpn.hi42.top"
 dn_prefix: "C=cn, O=Ops"
 ca_dn_info: "{{dn_prefix}}, CN=Own VPN CA"
 server_dn_info: "{{dn_prefix}}"
@@ -14,14 +14,13 @@ server_lifetime: 120
 # Strongswan settings
 client_dhcp_ip: 10.28.0.0/24
 client_dhcp_dns: 8.8.8.8
-client_auth: eap-mschapv2  # choice: [eap-mschapv2, eap-radius], Default eap-mschapv2;
-client_tunnel_range: 172.16.0.0/16  # only accors this tunnel
+client_tunnel_range: 0.0.0.0/0  # only accors this tunnel
 
 # Strongswan combine freeradius configure
-enabled_radius: no
+enabled_radius: False
 radius_port: 1812
-radius_secret: testing123
-radius_ip: 127.0.0.1
+radius_secret: 123456lllooo.ltd
+radius_ip: 192.168.30.2
 
 # temp test user
 username: testUserOnePla4

@@ -12,7 +12,11 @@ conn ios_ikev2
     leftsubnet={{ client_tunnel_range | default('0.0.0.0/0')}}
     leftcert={{install_dir}}/strongswan-{{strongswan_version}}/etc/ipsec.d/certs/server.cert.pem
     right=%any
-    rightauth={{ client_auth | default('eap-mschapv2') }}
+{% if enabled_radius %}
+    rightauth=eap-radius
+{% else %}
+    rightauth=eap-mschapv2
+{% endif %}
     rightsourceip={{ client_dhcp_ip }}
     rightdns={{ client_dhcp_dns }}
     rightsendcert=never

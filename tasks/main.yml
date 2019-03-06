@@ -39,5 +39,3 @@
 # combine radius
 - name: Configure eap-radius plugin
   include: config_eapradius.yml
-  notify: "Restart ipsec service"
-  when: enabled_radius == 'yes'
